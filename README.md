@@ -67,6 +67,8 @@ rtt min/avg/max/mdev = 0.645/0.961/1.160/0.209 ms
 ---
 # II. Spéléologie du réseau
 
+# 1. ARP
+
 ## A. Manip 1
 * Table ARP de `client1`
 ```bash
@@ -120,66 +122,6 @@ Suite au ping de `client1`sur `server1`, le `router1` servant d'intermédiaire, 
 * Table ARP de l'hôte
 ```bash
 PS C:\Users\Notitou> arp -a
-
-Interface : 192.168.101.1 --- 0xc
-  Adresse Internet      Adresse physique      Type
-  192.168.101.255       ff-ff-ff-ff-ff-ff     statique
-  224.0.0.22            01-00-5e-00-00-16     statique
-  224.0.0.251           01-00-5e-00-00-fb     statique
-  224.0.0.252           01-00-5e-00-00-fc     statique
-  226.43.168.192        01-00-5e-2b-a8-c0     statique
-  239.255.255.250       01-00-5e-7f-ff-fa     statique
-  255.255.255.255       ff-ff-ff-ff-ff-ff     statique
-
-Interface : 10.33.3.204 --- 0x1a
-  Adresse Internet      Adresse physique      Type
-  10.33.0.5             e4-a4-71-cb-56-56     dynamique
-  10.33.0.6             b0-70-2d-b8-9f-24     dynamique
-  10.33.0.47            0c-54-15-a9-6e-65     dynamique
-  10.33.0.110           94-b8-6d-59-34-45     dynamique
-  10.33.0.196           f8-59-71-83-5e-78     dynamique
-  10.33.0.234           70-c9-4e-90-0a-c7     dynamique
-  10.33.1.18            2c-20-0b-41-55-95     dynamique
-  10.33.1.27            24-18-1d-ae-9a-2d     dynamique
-  10.33.1.48            30-24-32-5a-6f-bd     dynamique
-  10.33.1.68            d8-bb-2c-b5-88-b6     dynamique
-  10.33.1.80            40-9f-38-1c-a9-db     dynamique
-  10.33.1.83            ca-ff-a4-e7-e1-a0     dynamique
-  10.33.1.91            b4-69-21-47-b9-ea     dynamique
-  10.33.1.135           6c-e8-5c-3d-f4-85     dynamique
-  10.33.1.147           b0-70-2d-b8-c2-c3     dynamique
-  10.33.1.149           dc-a2-66-21-d4-7d     dynamique
-  10.33.1.185           04-d6-aa-72-7b-34     dynamique
-  10.33.1.245           e4-0e-ee-73-78-67     dynamique
-  10.33.2.0             34-f6-4b-07-51-cf     dynamique
-  10.33.2.4             b8-8a-60-5b-d9-98     dynamique
-  10.33.2.36            40-a3-cc-b0-90-d2     dynamique
-  10.33.2.86            70-c9-4e-be-d4-b5     dynamique
-  10.33.2.87            88-b1-11-5a-63-33     dynamique
-  10.33.2.100           9c-30-5b-e0-f7-d3     dynamique
-  10.33.2.107           68-ec-c5-e6-19-be     dynamique
-  10.33.2.119           a8-5c-2c-61-13-57     dynamique
-  10.33.2.138           3c-f8-62-9b-4f-5b     dynamique
-  10.33.2.186           28-c6-3f-9e-d7-89     dynamique
-  10.33.2.196           98-22-ef-58-bc-87     dynamique
-  10.33.2.205           dc-2b-2a-50-1c-be     dynamique
-  10.33.2.243           d4-6d-6d-9b-f9-d8     dynamique
-  10.33.2.244           1c-4d-70-dd-e8-bb     dynamique
-  10.33.3.28            a0-56-f3-9f-e0-f1     dynamique
-  10.33.3.42            f4-8c-50-ab-c6-06     dynamique
-  10.33.3.65            18-5e-0f-d9-f5-3f     dynamique
-  10.33.3.121           04-d3-b0-1e-c4-36     dynamique
-  10.33.3.126           8c-85-90-ab-b5-84     dynamique
-  10.33.3.172           9c-b6-d0-20-69-a9     dynamique
-  10.33.3.236           88-78-73-97-91-6d     dynamique
-  10.33.3.253           00-12-00-40-4c-bf     dynamique
-  10.33.3.254           94-0c-6d-84-50-c8     dynamique
-  10.33.3.255           ff-ff-ff-ff-ff-ff     statique
-  224.0.0.22            01-00-5e-00-00-16     statique
-  224.0.0.251           01-00-5e-00-00-fb     statique
-  224.0.0.252           01-00-5e-00-00-fc     statique
-  239.255.255.250       01-00-5e-7f-ff-fa     statique
-  255.255.255.255       ff-ff-ff-ff-ff-ff     statique
 
 Interface : 10.1.0.1 --- 0x46
   Adresse Internet      Adresse physique      Type
@@ -280,8 +222,54 @@ Connection successfully activated (D-Bus active path: /org/freedesktop/NetworkMa
 
 * Tableau récapitulatif
 
-Machine | `net1` | `net2` | Adresse MAX
+Machine | `net1` | `net2` | Adresse MAC
 --- | --- | --- | ---
 `client1.tp4` | `10.1.0.10` | X | `0a:00:27:00:00:46`
 `router1.tp4` | `10.1.0.254` | `10.2.0.254` | `08:00:27:9c:42:37`
 `server1.tp4` | X | `10.2.0.10` | `0a:00:27:00:00:4b`
+---
+# 2.Wireshark
+
+## A. Interception d'ARP et `ping`
+
+* Envoi de 4 ping du `client1`au `server1`
+
+```bash
+[remi@client1 ~]$ ping -c 4 server1
+PING server1 (10.2.0.10) 56(84) bytes of data.
+64 bytes from server1 (10.2.0.10): icmp_seq=1 ttl=63 time=0.591 ms
+64 bytes from server1 (10.2.0.10): icmp_seq=2 ttl=63 time=1.08 ms
+64 bytes from server1 (10.2.0.10): icmp_seq=3 ttl=63 time=1.00 ms
+64 bytes from server1 (10.2.0.10): icmp_seq=4 ttl=63 time=1.05 ms
+
+--- server1 ping statistics ---
+4 packets transmitted, 4 received, 0% packet loss, time 3003ms
+rtt min/avg/max/mdev = 0.591/0.934/1.088/0.202 ms
+```
+* Envoi fichier `ping.pcap`de la VM `router1` à l'hôte
+
+```bash
+PS C:\Users\Notitou> scp remi@10.2.0.254:/home/remi/ping.pcap C:\Users\Notitou\Desktop\
+remi@10.2.0.254's password:
+ping.pcap                                                                             100% 1070     1.0KB/s   00:00
+```
+## B. Interception d'une communication `netcat`
+
+* `SYN`
+```wireshark
+"7","34.700033","10.1.0.10","10.2.0.10","TCP","74","42470 → 8888 [SYN] Seq=0 Win=29200 Len=0 MSS=1460 SACK_PERM=1 TSval=3941926 TSecr=0 WS=64"
+```
+* `SYN, ACK`
+```wireshark
+"8","34.700244","10.2.0.10","10.1.0.10","TCP","74","8888 → 42470 [SYN, ACK] Seq=0 Ack=1 Win=28960 Len=0 MSS=1460 SACK_PERM=1 TSval=3941300 TSecr=3941926 WS=64"
+```
+
+* `ACK`
+```wireshark
+"9","34.700561","10.1.0.10","10.2.0.10","TCP","66","42470 → 8888 [ACK] Seq=1 Ack=1 Win=29248 Len=0 TSval=3941928 TSecr=3941300"
+```
+
+* `nop frer`
+```wireshark
+"150","117.403421","10.2.0.10","10.1.0.10","ICMP","102","Destination unreachable (Host administratively prohibited)"
+```
