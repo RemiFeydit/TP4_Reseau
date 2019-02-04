@@ -273,3 +273,25 @@ ping.pcap                                                                       
 ```wireshark
 "150","117.403421","10.2.0.10","10.1.0.10","ICMP","102","Destination unreachable (Host administratively prohibited)"
 ```
+## C.Interception d'un trafic HTTP (BONUS)
+
+```bash
+[remi@server1 ~]$ sudo systemctl status nginx
+● nginx.service - The nginx HTTP and reverse proxy server
+   Loaded: loaded (/usr/lib/systemd/system/nginx.service; disabled; vendor preset: disabled)
+   Active: active (running) since Thu 2019-01-31 18:20:17 CET; 23s ago
+  Process: 4105 ExecStart=/usr/sbin/nginx (code=exited, status=0/SUCCESS)
+  Process: 4103 ExecStartPre=/usr/sbin/nginx -t (code=exited, status=0/SUCCESS)
+  Process: 4102 ExecStartPre=/usr/bin/rm -f /run/nginx.pid (code=exited, status=0/SUCCESS)
+ Main PID: 4107 (nginx)
+   CGroup: /system.slice/nginx.service
+           ├─4107 nginx: master process /usr/sbin/nginx
+           └─4108 nginx: worker process
+
+Jan 31 18:20:17 server1.tp4 systemd[1]: Starting The nginx HTTP and reverse ....
+Jan 31 18:20:17 server1.tp4 nginx[4103]: nginx: the configuration file /etc/...k
+Jan 31 18:20:17 server1.tp4 nginx[4103]: nginx: configuration file /etc/ngin...l
+Jan 31 18:20:17 server1.tp4 systemd[1]: Failed to read PID from file /run/ng...t
+Jan 31 18:20:17 server1.tp4 systemd[1]: Started The nginx HTTP and reverse p....
+Hint: Some lines were ellipsized, use -l to show in full.
+```
